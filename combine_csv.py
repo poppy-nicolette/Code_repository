@@ -1,8 +1,8 @@
 
 """
-For help run this in terminal: python script.py --help
+For help run this in terminal: python combine_csv.py --help
 
-Usage: combine_csv.py input_path output_file [--encoding=<utf-8>] [--delimiter=<,>]
+Usage: combine_csv.py input_path output_file [--encoding=<utf-8>]
 
 Arguments:
   input_path  Path to the directory containing CSV files
@@ -10,7 +10,11 @@ Arguments:
 
 Options:
   --encoding=<utf-8>  File encoding [default: utf-8]
-  --delimiter=<,>     CSV delimiter [default: ,]
+
+Run in terminal:
+    ```bash
+    python3 combine_csv.py "/path/to/input/directory" "output.csv"
+    ```
 """
 
 import csv
@@ -31,7 +35,7 @@ def combine_csv_files(input_path, output_file, encoding='utf-8'):
         with open(output_file, 'w', newline='', encoding=encoding) as outfile:
             writer = csv.writer(outfile,
                                 quoting=csv.QUOTE_ALL, # quote all fields
-                                delimiter='/')
+                                delimiter='|')
 
             # Process first file
             print(f"Processing {csv_files[0]}")
