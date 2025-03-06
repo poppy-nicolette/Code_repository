@@ -19,22 +19,26 @@ import os
 import argparse
 
 
-def combine_csv_files(input_path, output_file, encoding='utf-8', delimiter=','):
+def combine_csv_files(input_path, output_file, encoding='utf-8'):
     try:
         # Get all CSV files in the directory
         csv_files = glob.glob(os.path.join(input_path, "*.csv"))
 
         if not csv_files:
-            raise ValueError("No CSV files found in the specified directory")
+            raise ValueError("Sorry, no CSV files found in the specified directory")
 
         # Write to the output file
         with open(output_file, 'w', newline='', encoding=encoding) as outfile:
-            writer = csv.writer(outfile, delimiter=delimiter)
+            writer = csv.writer(outfile,
+                                quoting=csv.QUOTE_ALL, # quote all fields
+                                delimiter='/')
 
             # Process first file
             print(f"Processing {csv_files[0]}")
             with open(csv_files[0], 'r', encoding=encoding) as firstfile:
-                reader = csv.reader(firstfile, delimiter=delimiter)
+                reader = csv.reader(firstfile,
+                                    quoting=csv.QUOTE_ALL,
+                                    delimiter=',')
                 headers = next(reader)
                 writer.writerow(headers)
                 for row in reader:
@@ -44,7 +48,9 @@ def combine_csv_files(input_path, output_file, encoding='utf-8', delimiter=','):
             for file in csv_files[1:]:
                 print(f"Processing {file}")
                 with open(file, 'r', encoding=encoding) as infile:
-                    reader = csv.reader(infile, delimiter=delimiter)
+                    reader = csv.reader(infile,
+                                        quoting=csv.QUOTE_ALL,
+                                        delimiter=',')
                     next(reader)  # Skip header
                     for row in reader:
                         writer.writerow(row)
@@ -63,12 +69,11 @@ if __name__ == "__main__":
     parser.add_argument("input_path", help="Path to the directory containing CSV files")
     parser.add_argument("output_file", help="Name of the output file")
     parser.add_argument("--encoding", help="File encoding (default: utf-8)", default='utf-8')
-    parser.add_argument("--delimiter", help="CSV delimiter (default: ,)", default=',')
+
     args = parser.parse_args()
 
     combine_csv_files(
         args.input_path,
         args.output_file,
-        encoding=args.encoding,
-        delimiter=args.delimiter
+        encoding=args.encoding
     )
